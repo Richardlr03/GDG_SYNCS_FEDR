@@ -24,8 +24,12 @@
     resetForm();
   });
 
-  
-  document.getElementById('save-tasks')?.addEventListener('click', handleAddTask);
+  document.getElementById('modal-cancel-2')?.addEventListener('click', () => {
+    closeModal('task-modal', 'task-overlay');
+    resetForm();
+  });
+
+  document.getElementById('save-task')?.addEventListener('click', handleAddTask);
 
   function resetForm() {
     document.getElementById('f-title').value    = '';
@@ -80,7 +84,7 @@
     
     const visible = activeTasks.filter(t => {
       const match = t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q);
-      if (filter === 'done')    return match && t.done = true;
+      if (filter === 'done')    return match && t.done;
       if (filter === 'pending') return match && !t.done;
       return match;
     });
@@ -179,9 +183,9 @@
     const tasks = loadTasks().filter(t => !t.archived);
     const total   = tasks.length;
     
-    const done    = tasks.filter(t => !t.done).length;
+    const done    = tasks.filter(t => t.done).length;
     const pending = tasks.filter(t => !t.done).length;
-    const pct = total === 0 ? 0 : Math.round((tasks.filter(t => t.done).length / total) * 100);
+    const pct = total === 0 ? 0 : Math.round((done / total) * 100);
 
     document.getElementById('dash-total').textContent   = total;
     document.getElementById('dash-done').textContent    = done;
@@ -288,8 +292,7 @@
 
       const target = item.dataset.tab;
       document.querySelectorAll('.settings-panel').forEach(p => {
-        
-        p.style.display = p.dataset.panel = target ? 'flex' : 'none';
+        p.style.display = p.dataset.panel === target ? 'flex' : 'none';
       });
     });
   });
